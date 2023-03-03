@@ -18,13 +18,15 @@ class Monitor:
 
         self.command = ["ffmpeg", "-y", "-f", "rawvideo", "-vcodec", "rawvideo", "-s", "{}X{}".format(width, height),
                         "-pix_fmt", "rgb24", "-r", "60", "-i", "-", "-an", "-vcodec", "mpeg4", saved_path]
-        try:
-            self.pipe = sp.Popen(self.command, stdin=sp.PIPE, stderr=sp.PIPE)
-        except FileNotFoundError:
-            pass
+        # try:
+        #     self.pipe = sp.Popen(self.command, stdin=sp.PIPE, stderr=sp.PIPE)
+        # except FileNotFoundError:
+        #     pass 
+        self.pipe = sp.Popen(self.command, stdin=sp.PIPE, stderr=sp.PIPE)
 
     def record(self, image_array):
         self.pipe.stdin.write(image_array.tostring())
+        pass
 
 
 def process_frame(frame):

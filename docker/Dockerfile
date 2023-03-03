@@ -46,6 +46,8 @@ RUN apt-get update && \
         # for GUI
 		libssl-dev zlib1g-dev libbz2-dev \
 		libreadline-dev libsqlite3-dev llvm libncurses5-dev libncursesw5-dev \
+		# for gym env.render()
+		freeglut3-dev ffmpeg \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

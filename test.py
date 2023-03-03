@@ -6,8 +6,8 @@ import os
 os.environ['OMP_NUM_THREADS'] = '1'
 import argparse
 import torch
-from src.env import create_train_env
-from src.model import PPO
+from env import create_train_env
+from model import PPO
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT, COMPLEX_MOVEMENT, RIGHT_ONLY
 import torch.nn.functional as F
 
@@ -16,7 +16,7 @@ def get_args():
     parser = argparse.ArgumentParser(
         """Implementation of model described in the paper: Proximal Policy Optimization Algorithms for Contra Nes""")
     parser.add_argument("--world", type=int, default=1)
-    parser.add_argument("--stage", type=int, default=1)
+    parser.add_argument("--stage", type=int, default=2)
     parser.add_argument("--action_type", type=str, default="simple")
     parser.add_argument("--saved_path", type=str, default="trained_models")
     parser.add_argument("--output_path", type=str, default="output")

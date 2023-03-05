@@ -15,18 +15,16 @@ import torch.multiprocessing as mp
 
 class Monitor:
     def __init__(self, width, height, saved_path):
-
         self.command = ["ffmpeg", "-y", "-f", "rawvideo", "-vcodec", "rawvideo", "-s", "{}X{}".format(width, height),
                         "-pix_fmt", "rgb24", "-r", "60", "-i", "-", "-an", "-vcodec", "mpeg4", saved_path]
-        # try:
-        #     self.pipe = sp.Popen(self.command, stdin=sp.PIPE, stderr=sp.PIPE)
-        # except FileNotFoundError:
-        #     pass 
-        self.pipe = sp.Popen(self.command, stdin=sp.PIPE, stderr=sp.PIPE)
+        try:
+            self.pipe = sp.Popen(self.command, stdin=sp.PIPE, stderr=sp.PIPE)
+        except FileNotFoundError:
+            pass 
+        # self.pipe = sp.Popen(self.command, stdin=sp.PIPE, stderr=sp.PIPE)
 
     def record(self, image_array):
         self.pipe.stdin.write(image_array.tostring())
-        pass
 
 
 def process_frame(frame):
@@ -117,8 +115,8 @@ class CustomSkipFrame(Wrapper):
         return self.states[None, :, :, :].astype(np.float32)
 
 
-def create_train_env(world, stage, actions, output_path=None):
-    env = gym_super_mario_bros.make("SuperMarioBros-{}-{}-v0".format(world, stage))
+def create_train_env(world, stage, rom, actions, output_path=None):
+    env = gym_super_mario_bros.make("SuperMarioBros-{}-{}-{}".format(world, stage, rom))
     if output_path:
         monitor = Monitor(256, 240, output_path)
     else:
@@ -131,15 +129,17 @@ def create_train_env(world, stage, actions, output_path=None):
 
 
 class MultipleEnvironments:
-    def __init__(self, world, stage, action_type, num_envs, output_path=None):
+    def __init__(self, world, stage, rom, action_type, num_envs, output_path=None):
         self.agent_conns, self.env_conns = zip(*[mp.Pipe() for _ in range(num_envs)])
+        # select action type
         if action_type == "right":
             actions = RIGHT_ONLY
         elif action_type == "simple":
             actions = SIMPLE_MOVEMENT
         else:
             actions = COMPLEX_MOVEMENT
-        self.envs = [create_train_env(world, stage, actions, output_path=output_path) for _ in range(num_envs)]
+        # create envs list
+        self.envs = [create_train_env(world, stage, rom, actions, output_path=output_path) for _ in range(num_envs)]
         self.num_states = self.envs[0].observation_space.shape[0]
         self.num_actions = len(actions)
         for index in range(num_envs):

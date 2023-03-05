@@ -16,7 +16,8 @@ def get_args():
     parser = argparse.ArgumentParser(
         """Implementation of model described in the paper: Proximal Policy Optimization Algorithms for Contra Nes""")
     parser.add_argument("--world", type=int, default=1)
-    parser.add_argument("--stage", type=int, default=2)
+    parser.add_argument("--stage", type=int, default=1)
+    parser.add_argument("--rom", type=str, default="v0")
     parser.add_argument("--action_type", type=str, default="simple")
     parser.add_argument("--saved_path", type=str, default="trained_models")
     parser.add_argument("--output_path", type=str, default="output")
@@ -35,15 +36,13 @@ def test(opt):
         actions = SIMPLE_MOVEMENT
     else:
         actions = COMPLEX_MOVEMENT
-    env = create_train_env(opt.world, opt.stage, actions,
-                           "{}/video_{}_{}.mp4".format(opt.output_path, opt.world, opt.stage))
+    env = create_train_env(opt.world, opt.stage, opt.rom, actions, "{}/video_{}_{}.mp4".format(opt.output_path, opt.world, opt.stage))
     model = PPO(env.observation_space.shape[0], len(actions))
     if torch.cuda.is_available():
-        model.load_state_dict(torch.load("{}/ppo_super_mario_bros_{}_{}".format(opt.saved_path, opt.world, opt.stage)))
+        model.load_state_dict(torch.load("{}/smb_ppo_{}_{}_{}".format(opt.saved_path, opt.world, opt.stage, opt.rom)))
         model.cuda()
     else:
-        model.load_state_dict(torch.load("{}/ppo_super_mario_bros_{}_{}".format(opt.saved_path, opt.world, opt.stage),
-                                         map_location=lambda storage, loc: storage))
+        model.load_state_dict(torch.load("{}/smb_ppo_{}_{}_{}".format(opt.saved_path, opt.world, opt.stage, opt.rom),map_location=lambda storage, loc: storage))
     model.eval()
     state = torch.from_numpy(env.reset())
     while True:

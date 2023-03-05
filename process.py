@@ -38,7 +38,7 @@ def display_color_movie(img_color,info):
     #display.display(display.HTML(ani.to_jshtml()))
     plt.close()
 
-def eval(opt, global_model, num_states, num_actions, last_episode):
+def eval(opt, global_model, num_states, num_actions):
     torch.manual_seed(123)
     if opt.action_type == "right":
         actions = RIGHT_ONLY
@@ -46,7 +46,7 @@ def eval(opt, global_model, num_states, num_actions, last_episode):
         actions = SIMPLE_MOVEMENT
     else:
         actions = COMPLEX_MOVEMENT
-    env = create_train_env(opt.world, opt.stage, actions)
+    env = create_train_env(opt.world, opt.stage, opt.rom, actions)
     # color env
     env_color = gym_super_mario_bros.make("SuperMarioBros-{}-{}-v0".format(opt.world, opt.stage))
     env_color = JoypadSpace(env_color, actions)  # 行動空間を制限 0. 右に歩く、 1. 右方向にジャンプ
@@ -80,16 +80,16 @@ def eval(opt, global_model, num_states, num_actions, last_episode):
         if info["flag_get"]:
             print("GOAL!!!")
             torch.save(local_model.state_dict(),
-                       "{}/smb_ppo_goal_{}_{}_{}".format(opt.saved_path, opt.world, opt.stage, curr_step+last_episode))
+                    "{}/smb_ppo_goal_{}_{}_{}_{}".format(opt.saved_path, opt.world, opt.stage, opt.rom, curr_step))
 
         #env.render()
         
         # 使えない場合
-        #screen = env.render(mode='rgb_array')
-        # screen = env.render(mode='rgb_array')
-        # plt.imshow(screen)
-        # ipythondisplay.clear_output(wait=True)
-        # ipythondisplay.display(plt.gcf())
+        screen = env.render(mode='rgb_array')
+        screen = env.render(mode='rgb_array')
+        plt.imshow(screen)
+        # display.clear_output(wait=True)
+        # display.display(plt.gcf())
         
         #
         for i in range(4):

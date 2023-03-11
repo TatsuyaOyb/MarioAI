@@ -2,15 +2,15 @@
 name = "poetry-mario"
 version = "0.1.0"
 description = "mario environments"
-authors = ["Kosuke Harada <kosuke.harada@olympus.com>"]
+authors = ["Tatsuya Oyabu <ohyabu.tatsuya.15@shizuoka.ac.jp>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-gym-super-mario-bros = "=7.3.2"
-gym = "=0.17.3"
+gym-super-mario-bros = "=7.4.0"
+gym = "^0.24.0"
 matplotlib = "^3.6.0"
 numpy = "^1.21.4"
-opencv-python = "^4.6.0"
+opencv-python = "^4.3.0.36"
 pandas = "^1.5.1"
 Pillow = "^8.4.0"
 #ray = "^1.8.0"
@@ -25,6 +25,8 @@ tqdm = "^4.63.1"
 wandb = "*"
 IPython = "*"
 pyvirtualdisplay = "*"
+future = "^0.18.2" 
+pyglet = "^1.5.7"
 
 #[[tool.poetry.source]]
 #name = "pytorch-cu117"

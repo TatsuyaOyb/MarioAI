@@ -47,7 +47,7 @@ RUN apt-get update && \
 		libssl-dev zlib1g-dev libbz2-dev \
 		libreadline-dev libsqlite3-dev llvm libncurses5-dev libncursesw5-dev \
 		# for gym env.render()
-		libglib2.0-dev libsm6 libxext6 libxrender-dev \
+		#libglib2.0-dev libsm6 libxext6 libxrender-dev \
 		freeglut3-dev ffmpeg \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -85,6 +85,7 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
 RUN apt-get update && apt-get install -yq --no-install-recommends \
         libglvnd0 libgl1 libglx0 libegl1 \
         libglew2.2 libgl1-mesa-glx libosmesa6 \
+		x11-apps \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -105,7 +106,9 @@ RUN ln -snf /usr/share/zoneinfo/$TIMEZONE /etc/localtime && \
     echo $TIMEZONE > /etc/timezone
 
 # Configure container startup
-RUN chown -R ${USERNAME}:${GROUPNAME} /usr/local/bin
+RUN chown -R ${USERNAME}:${GROUPNAME} /usr/local/bin && \
+	chown -R ${USERNAME}:${GROUPNAME} ${HOME} && \
+    chmod -R 755 ${HOME}
 EXPOSE 8888
 USER ${USERNAME}
 WORKDIR ${HOME}/workspace
